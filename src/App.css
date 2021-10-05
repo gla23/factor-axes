@@ -1,38 +1,67 @@
 .App {
-  text-align: center;
+  margin-top: 40px;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+:root {
+  background-color: #222;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+tr {
+  height: 60px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+td:hover {
+  background-color: #333;
+}
+
+td.row0 {
+  background-color: #333;
+}
+td.column0 {
+  background-color: #333;
+}
+td.data0-0 {
+  background-color: #444;
+}
+input {
+  background-color: #333;
+  height: 30px;
+  margin-bottom: 10px;
+  color: white;
+}
+label {
+  width: 150px;
+  display: inline-block;
+}
+.wrapper {
+  display: flex;
+  justify-content: space-around;
+  /* margin-top: 20px; */
+}
+.summary {
+  flex: 2 1 100px;
+  max-height: 400px;
+  padding: 20px;
+  flex-wrap: wrap;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.summaryNumber {
+  height: 28px;
+  line-height: 28px;
+  width: 100px;
+  font-size: large;
+  display: inline-block;
+  margin-top: 2px;
+  padding: 4px;
+}
+.controls {
+  flex: 1 1 100px;
+  padding: 20px;
+  text-align: center;
+  display: inline-block;
+}
+.modal {
+  background-color: #333;
 }
