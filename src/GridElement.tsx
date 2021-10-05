@@ -9,7 +9,8 @@ export const GridElement = (props: {
   const [hover, setHover] = useState(false);
   const { estimations, data, setEstimation } = props;
   const est = estimations[data.i]?.[data.j];
-  const error = est / parseFloat(data.number);
+
+  const error = est ? est / parseFloat(data.number) : null;
 
   return (
     <td
@@ -24,7 +25,7 @@ export const GridElement = (props: {
       }
     >
       {data.number}
-      {est ? (
+      {est && error ? (
         <>
           <br />
           <span style={{ marginLeft: 8, fontSize: 12 }}>{est}</span>

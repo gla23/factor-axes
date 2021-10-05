@@ -3,6 +3,7 @@ import "./App.css";
 import { factorable } from "./factorable";
 import { GridElement } from "./GridElement";
 import { Modal } from "./Modal";
+import estimationsData from "./estimations.json";
 
 export interface Data {
   number: string;
@@ -13,7 +14,7 @@ export interface Estimation extends Data {
   estimation: string;
 }
 export interface Estimations {
-  [i: number]: { [j: number]: number };
+  [i: number]: { [j: number]: number | null };
 }
 
 export const removeFluff = (number: number): string => {
@@ -43,9 +44,9 @@ function App() {
   const [estimation, setEstimation] = useState<null | Estimation>();
   const [estimations, setEstimations] = useState<Estimations>(() => {
     const storage = localStorage.getItem("estimations");
-    return storage ? JSON.parse(storage) : [];
+    return storage ? JSON.parse(storage) : estimationsData;
   });
-
+  console.log(estimations);
   useEffect(() => {
     localStorage.setItem("estimations", JSON.stringify(estimations));
   });
@@ -175,6 +176,7 @@ const Summary = (props: { estimations: Estimations }) => {
       const j = parseInt(keyJ);
       const actual = Math.pow(2, j) * Math.pow(3, i);
       const estimation = obj[j];
+      if (estimation === null) continue;
       const error = removeFluff(estimation / actual);
       const data = {
         estimation: String(estimation),
@@ -185,7 +187,6 @@ const Summary = (props: { estimations: Estimations }) => {
 
       const addFactor = (num: number) => {
         const multiple = estimation * num * upscale;
-        // if (num === 1) console.log(estimation, num, upscale, multiple);
         if (Math.abs(multiple - Math.round(multiple)) > 0.0001) return;
         precalc[Math.round(multiple)] = data;
       };
@@ -193,7 +194,6 @@ const Summary = (props: { estimations: Estimations }) => {
       factorable.forEach(addFactor);
     }
   }
-  console.log("precalc", precalc);
   return (
     <div className="summary">
       {new Array(80).fill(null).map((_, i) => {
