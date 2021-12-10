@@ -40,8 +40,8 @@ function App() {
   const [base, setBase] = useState(10);
   const [xAxis, setXAxis] = useState(2);
   const [yAxis, setYAxis] = useState(3);
-  const [tableWidth, setTableWidth] = useState(7);
-  const [percentageError, setPercentageError] = useState(false);
+  const [tableWidth, setTableWidth] = useState(9);
+  const [percentageError, setPercentageError] = useState(true);
 
   const [estimation, setEstimation] = useState<null | Estimation>();
   const [estimations, setEstimations] = useState<Estimations>(() => {
