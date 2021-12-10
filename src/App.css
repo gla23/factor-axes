@@ -23,7 +23,9 @@ td.column0 {
 td.data0-0 {
   background-color: #444;
 }
+.input-size,
 input {
+  display: inline-block;
   background-color: #333;
   height: 30px;
   margin-bottom: 10px;

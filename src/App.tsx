@@ -18,11 +18,12 @@ export interface Estimations {
 }
 
 export const removeFluff = (number: number): string => {
-  const string = "" + number;
+  const string = "" + parseFloat(String(number)).toPrecision(12);
   if (string.length < 6) return string;
   const index = string.indexOf("0000");
   const ans = string.slice(0, index);
-  return ans;
+  const shorter = ans.slice(0, 5);
+  return shorter.endsWith(".") ? shorter.slice(0, -1) : shorter;
 };
 
 const colorOf = (number: number) => {
@@ -40,13 +41,14 @@ function App() {
   const [xAxis, setXAxis] = useState(2);
   const [yAxis, setYAxis] = useState(3);
   const [tableWidth, setTableWidth] = useState(7);
+  const [percentageError, setPercentageError] = useState(false);
 
   const [estimation, setEstimation] = useState<null | Estimation>();
   const [estimations, setEstimations] = useState<Estimations>(() => {
     const storage = localStorage.getItem("estimations");
     return storage ? JSON.parse(storage) : estimationsData;
   });
-  console.log(estimations);
+
   useEffect(() => {
     localStorage.setItem("estimations", JSON.stringify(estimations));
   });
@@ -115,7 +117,7 @@ function App() {
       <div className="wrapper">
         <div className="controls">
           <div>
-            <label>base:</label>
+            <label>Base:</label>
             <input
               type="text"
               value={base}
@@ -124,7 +126,7 @@ function App() {
           </div>
 
           <div>
-            <label>xAxis:</label>
+            <label>X-axis:</label>
             <input
               type="text"
               value={xAxis}
@@ -133,7 +135,7 @@ function App() {
           </div>
 
           <div>
-            <label>yAxis:</label>
+            <label>Y-axis:</label>
             <input
               type="text"
               value={yAxis}
@@ -142,15 +144,29 @@ function App() {
           </div>
 
           <div>
-            <label>tableWidth:</label>
+            <label>Table width:</label>
             <input
               type="text"
               value={tableWidth}
               onChange={(e) => setTableWidth(parseInt(e.target.value))}
             />
           </div>
+          <div>
+            <input
+              id="percentage"
+              type="checkbox"
+              value={String(percentageError)}
+              onChange={(e) => setPercentageError((v) => !v)}
+            />
+            <label
+              style={{ verticalAlign: "top", marginTop: 8 }}
+              htmlFor="percentage"
+            >
+              Percentage error
+            </label>
+          </div>
         </div>
-        <Summary estimations={estimations} />
+        <Summary estimations={estimations} percentageError={percentageError} />
       </div>
     </div>
   );
@@ -166,7 +182,10 @@ const decimalPlaces = (num: number) => {
   return num;
 };
 
-const Summary = (props: { estimations: Estimations }) => {
+const Summary = (props: {
+  estimations: Estimations;
+  percentageError: boolean;
+}) => {
   const precalc: { [number: number]: { estimation: string; error: string } } =
     {};
   for (let keyI in props.estimations) {
@@ -199,6 +218,9 @@ const Summary = (props: { estimations: Estimations }) => {
       {new Array(80).fill(null).map((_, i) => {
         const num = i + 1;
         const estimation = precalc[num];
+        const percentage = estimation
+          ? (parseFloat(estimation.error) - 1) * 100
+          : null;
         return (
           <div
             key={num}
@@ -214,12 +236,16 @@ const Summary = (props: { estimations: Estimations }) => {
               }}
               key={num}
             >
-              {precalc[num] ? (
+              {estimation && percentage ? (
                 <>
                   <span style={{ marginLeft: 8 }}></span>
-                  <span>{precalc[num]?.estimation}</span>
+                  <span>{estimation?.estimation}</span>
                   <span style={{ marginLeft: 8 }}></span>
-                  <span>{precalc[num]?.error.slice(0, 7)}</span>
+                  <span>
+                    {props.percentageError
+                      ? removeFluff(percentage) + "%"
+                      : estimation?.error.slice(0, 7)}
+                  </span>
                 </>
               ) : (
                 <span>{num}</span>
