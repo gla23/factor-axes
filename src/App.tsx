@@ -173,7 +173,7 @@ function App() {
 }
 
 const decimalPlaces = (num: number) => {
-  let i = 0;
+  let i = -5;
   while (i < 50) {
     if (num * Math.pow(10, i) > 1) return i;
     i += 1;
