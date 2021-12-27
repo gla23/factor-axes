@@ -155,7 +155,7 @@ function App() {
             <input
               id="percentage"
               type="checkbox"
-              value={String(percentageError)}
+              checked={percentageError}
               onChange={(e) => setPercentageError((v) => !v)}
             />
             <label
