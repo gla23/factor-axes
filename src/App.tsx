@@ -116,15 +116,33 @@ function App() {
       <br />
       <div className="wrapper">
         <div className="controls">
-          <div>
-            <label>Base:</label>
-            <input
-              type="text"
-              value={base}
-              onChange={(e) => setBase(parseInt(e.target.value))}
-            />
+          <div
+            className="control"
+            style={{ marginRight: 8 }}
+            onClick={() => setEstimations({})}
+          >
+            Clear
           </div>
-
+          <div
+            className="control"
+            onClick={() => setEstimations(estimationsData)}
+          >
+            Reset
+          </div>
+          <div>
+            <input
+              id="percentage"
+              type="checkbox"
+              checked={percentageError}
+              onChange={(e) => setPercentageError((v) => !v)}
+            />
+            <label
+              style={{ verticalAlign: "top", marginTop: 8 }}
+              htmlFor="percentage"
+            >
+              Percentage error
+            </label>
+          </div>
           <div>
             <label>X-axis:</label>
             <input
@@ -152,18 +170,12 @@ function App() {
             />
           </div>
           <div>
+            <label>Base:</label>
             <input
-              id="percentage"
-              type="checkbox"
-              checked={percentageError}
-              onChange={(e) => setPercentageError((v) => !v)}
+              type="text"
+              value={base}
+              onChange={(e) => setBase(parseInt(e.target.value))}
             />
-            <label
-              style={{ verticalAlign: "top", marginTop: 8 }}
-              htmlFor="percentage"
-            >
-              Percentage error
-            </label>
           </div>
         </div>
         <Summary estimations={estimations} percentageError={percentageError} />
@@ -215,7 +227,7 @@ const Summary = (props: {
   }
   return (
     <div className="summary">
-      {new Array(80).fill(null).map((_, i) => {
+      {new Array(100).fill(null).map((_, i) => {
         const num = i + 1;
         const estimation = precalc[num];
         const percentage = estimation

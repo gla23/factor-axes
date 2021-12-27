@@ -23,11 +23,17 @@ td.column0 {
 td.data0-0 {
   background-color: #444;
 }
-.input-size,
-input {
+.control {
+  width: 120px;
+  /* height: 30px;
+  line-height: 30px; */
+}
+input,
+.control {
   display: inline-block;
   background-color: #333;
   height: 30px;
+  line-height: 30px;
   margin-bottom: 10px;
   color: white;
 }
@@ -37,11 +43,11 @@ label {
 }
 .wrapper {
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
   /* margin-top: 20px; */
 }
 .summary {
-  flex: 2 1 100px;
+  flex: 0 0 550px;
   max-height: 400px;
   padding: 20px;
   flex-wrap: wrap;
@@ -59,7 +65,7 @@ label {
   padding: 4px;
 }
 .controls {
-  flex: 1 1 100px;
+  flex: 0 0 350px;
   padding: 20px;
   text-align: center;
   display: inline-block;
