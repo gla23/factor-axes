@@ -15,8 +15,8 @@
   },
   "scripts": {
     "start": "vite",
-    "predeploy": "yarn build?? How to do this with vite?",
-    "deploy": "gh-pages -d build"
+    "build": "vite build",
+    "deploy": "./deploy.sh"
   },
   "eslintConfig": {
     "extends": [
