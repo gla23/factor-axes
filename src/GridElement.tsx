@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { animated, useSpring } from "react-spring";
 import { Data, Estimations, Estimation, removeFluff } from "./App";
 
-const lineHeight = 150;
+const lineHeight = 350;
 const Line = (props: { horizontal?: boolean; color: string }) => {
   const { horizontal, color } = props;
   return (
@@ -25,26 +26,37 @@ export const GridElement = (props: {
   setEstimation: (estimation: Estimation) => void;
   gridDimensions: (number | undefined)[];
   gridLines: boolean;
+  blind: boolean;
+  hidden?: boolean;
 }) => {
+  const { estimations, data, setEstimation, blind, hidden } = props;
   const [hover, setHover] = useState(false);
-  const { estimations, data, setEstimation } = props;
+  const [clicked, setClicked] = useState(data.number === "1");
   const est = estimations[data.i]?.[data.j];
 
   const error = est ? est / parseFloat(data.number) : null;
   const [x = 6, xN = 5, y = 4, yN = 3] = props.gridDimensions;
 
+  const showNumber = !blind || clicked;
+  const showMask = hidden && !(showNumber || hover);
+
   return (
     <td
       style={{ position: "relative" }}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
       className={`row${data.i} column${data.j} data${data.i}-${data.j}`}
-      onClick={() =>
-        setEstimation({
+      onMouseEnter={(e) =>
+        e.target.constructor.name !== "HTMLDivElement" && setHover(true)
+      }
+      onMouseLeave={(e) => setHover(false)}
+      onClick={(e) => {
+        if (e.target.constructor.name === "HTMLDivElement")
+          return e.preventDefault();
+        setClicked((c) => !c);
+        return setEstimation({
           ...data,
           estimation: est ? String(est) : "",
-        })
-      }
+        });
+      }}
     >
       {props.gridLines &&
         data.i < y &&
@@ -54,23 +66,43 @@ export const GridElement = (props: {
         data.j < x - 1 &&
         ((data.i % 4 === 0 && <Line color="#060" horizontal />) ||
           (data.i % 2 === 0 && <Line color="#404040" horizontal />))}
+      <Text opacity={showNumber ? 1 : hover ? 0.6 : 0}>{data.number}</Text>
       <span
         style={{
+          position: "absolute",
+          left: "50%",
+          transform: "translateX(-50%)",
           zIndex: 4,
-          position: "relative",
         }}
       >
-        {data.number}
-        {est && error ? (
-          <>
-            <br />
-            <span style={{ marginLeft: 8, fontSize: 12 }}>{est}</span>
-            <span style={{ marginLeft: 8, fontSize: 12 }}>
-              {removeFluff(error)}
-            </span>
-          </>
-        ) : null}
+        <Text opacity={showMask ? 1 : 0}>???</Text>
       </span>
+      {est && error && !blind && showNumber ? (
+        <>
+          <br />
+          <span style={{ marginLeft: 8, fontSize: 12 }}>
+            <Text>{est}</Text>
+          </span>
+          <span style={{ marginLeft: 8, fontSize: 12 }}>
+            <Text>{removeFluff(error)}</Text>
+          </span>
+        </>
+      ) : null}
     </td>
   );
 };
+
+function Text(props: { opacity?: number; children: string | number }) {
+  const spring = useSpring({ to: { opacity: props.opacity ?? 1 } });
+  return (
+    <animated.span
+      style={{
+        ...spring,
+        zIndex: 4,
+        position: "relative",
+      }}
+    >
+      {props.children}
+    </animated.span>
+  );
+}

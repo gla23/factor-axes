@@ -38,15 +38,26 @@ const colorOf = (number: number) => {
   return `rgba(${a[0]}, ${a[1]}, ${a[2]}, 0.25)`;
 };
 function App() {
+  const params = new URLSearchParams(location.search);
   const [base, setBase] = useState(10);
   const [xAxis, setXAxis] = useState(2);
   const [yAxis, setYAxis] = useState(3);
-  const [tableWidths, setTableWidths] = useState<(number | undefined)[]>([
-    6, 5, 4, 3,
-  ]);
+  const axes = params
+    .get("axes")
+    ?.split(",")
+    .map((str) => parseInt(str));
+  const [axisLengths, setAxisLengths] = useState<(number | undefined)[]>(
+    axes || [6, 5, 4, 3]
+  );
   const [percentageError, setPercentageError] = useState(true);
-  const [gridLines, setGridLines] = useState(false);
-
+  const [gridLines, setGridLines] = useState(params.get("grid") !== null);
+  const simple = params.get("simple") !== null;
+  const blind = params.get("blind") !== null;
+  const hiddenBoxes = params
+    .get("hidden")
+    ?.split(" ")
+    .map((pair) => pair.split(",").map((str) => parseInt(str)));
+  console.log(hiddenBoxes, params.get("hidden"));
   const [estimation, setEstimation] = useState<null | Estimation>();
   const [estimations, setEstimations] = useState<Estimations>(() => {
     const storage = getItem("estimations");
@@ -57,7 +68,7 @@ function App() {
     setItem("estimations", JSON.stringify(estimations));
   });
 
-  const [x = 6, xN = 5, y = 4, yN = 3] = tableWidths;
+  const [x = 6, xN = 5, y = 4, yN = 3] = axisLengths;
   const stuff: Data[][] = [];
   for (let i = 0; i < y + yN - 1; i++) {
     stuff[i] = [];
@@ -73,28 +84,37 @@ function App() {
     }
   }
 
+  const mainGrid = (
+    <table
+      style={{ width: "100vw", textAlign: "center", overflow: "hidden" }}
+      className={blind ? "" : "notBlind"}
+    >
+      <tbody>
+        {stuff.map((row, i) => (
+          <tr key={i}>
+            {row.map((data, j) => (
+              <GridElement
+                key={j}
+                data={data}
+                estimations={estimations}
+                setEstimation={setEstimation}
+                gridDimensions={axisLengths}
+                gridLines={gridLines}
+                blind={blind}
+                hidden={hiddenBoxes?.some(
+                  (box) => box[0] === data.j && box[1] === data.i
+                )}
+              />
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+  if (simple) return mainGrid;
   return (
     <div className="App">
-      <table
-        style={{ width: "100vw", textAlign: "center", overflow: "hidden" }}
-      >
-        <tbody>
-          {stuff.map((row, i, columns) => (
-            <tr key={i}>
-              {row.map((data, j, rows) => (
-                <GridElement
-                  key={j}
-                  data={data}
-                  estimations={estimations}
-                  setEstimation={setEstimation}
-                  gridDimensions={tableWidths}
-                  gridLines={gridLines}
-                />
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {mainGrid}
       <Modal open={!!estimation} close={() => setEstimation(undefined)}>
         <div style={{ paddingLeft: "24px" }}>
           <h2>Add estimation</h2>
@@ -178,14 +198,14 @@ function App() {
             </label>
           </div>
           <div>
-            <label>Table widths:</label>
+            <label>Axis lengths:</label>
             <input
               type="text"
-              value={tableWidths.join(" ")}
+              value={axisLengths.join(" ")}
               onChange={(e) => {
                 const value = e.target.value;
                 const strings = value.split(" ");
-                setTableWidths(
+                setAxisLengths(
                   strings.flatMap((string) =>
                     string === "" ? [undefined] : [parseInt(string)]
                   )

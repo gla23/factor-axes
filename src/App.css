@@ -10,17 +10,17 @@ tr {
   height: 60px;
 }
 
-td:hover {
+.notBlind td:hover {
   background-color: #333;
 }
 
-td.row0 {
+.notBlind td.row0 {
   background-color: #333;
 }
-td.column0 {
+.notBlind td.column0 {
   background-color: #333;
 }
-td.data0-0 {
+.notBlind td.data0-0 {
   background-color: #444;
 }
 
