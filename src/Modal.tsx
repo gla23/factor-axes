@@ -34,16 +34,18 @@ export const Modal = (props: ModalProps) => {
               width: "100vw",
               height: "100vh",
               backgroundColor: "black",
+              zIndex: "100",
             }}
             onClick={props.close}
           />
         )
       )}
       {modalTransition((style, item) =>
-        item ? (
+        !item ? null : (
           <animated.div
             className="modal"
             style={{
+              zIndex: "100",
               position: "fixed",
               ...style,
               maxWidth: "80vw",
@@ -74,7 +76,7 @@ export const Modal = (props: ModalProps) => {
             )}
             {props.children}
           </animated.div>
-        ) : null
+        )
       )}
     </>,
     modalRoot

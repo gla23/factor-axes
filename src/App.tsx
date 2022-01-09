@@ -40,8 +40,11 @@ function App() {
   const [base, setBase] = useState(10);
   const [xAxis, setXAxis] = useState(2);
   const [yAxis, setYAxis] = useState(3);
-  const [tableWidth, setTableWidth] = useState(9);
+  const [tableWidths, setTableWidths] = useState<(number | undefined)[]>([
+    6, 5, 4, 3,
+  ]);
   const [percentageError, setPercentageError] = useState(true);
+  const [gridLines, setGridLines] = useState(false);
 
   const [estimation, setEstimation] = useState<null | Estimation>();
   const [estimations, setEstimations] = useState<Estimations>(() => {
@@ -53,12 +56,13 @@ function App() {
     localStorage.setItem("estimations", JSON.stringify(estimations));
   });
 
+  const [x = 6, xN = 5, y = 4, yN = 3] = tableWidths;
   const stuff: Data[][] = [];
-  for (let i = 0; i < tableWidth; i++) {
+  for (let i = 0; i < y + yN - 1; i++) {
     stuff[i] = [];
-    for (let j = 0; j < tableWidth; j++) {
-      const row = -i + Math.floor(tableWidth / 2);
-      const column = j - Math.floor(tableWidth / 2);
+    for (let j = 0; j < x + xN - 1; j++) {
+      const row = y - 1 - i;
+      const column = j - xN + 1;
       const number = Math.pow(yAxis, row) * Math.pow(xAxis, column);
       stuff[i][j] = {
         number: number.toString(base).slice(0, 10),
@@ -67,25 +71,30 @@ function App() {
       };
     }
   }
+
   return (
     <div className="App">
-      <table style={{ width: "100vw", textAlign: "center" }}>
+      <table
+        style={{ width: "100vw", textAlign: "center", overflow: "hidden" }}
+      >
         <tbody>
-          {stuff.map((row, i) => (
+          {stuff.map((row, i, columns) => (
             <tr key={i}>
-              {row.map((data, j) => (
+              {row.map((data, j, rows) => (
                 <GridElement
                   key={j}
                   data={data}
                   estimations={estimations}
                   setEstimation={setEstimation}
+                  gridDimensions={tableWidths}
+                  gridLines={gridLines}
                 />
               ))}
             </tr>
           ))}
         </tbody>
       </table>
-      <Modal open={!!estimation} close={() => setEstimation(null)}>
+      <Modal open={!!estimation} close={() => setEstimation(undefined)}>
         <div style={{ paddingLeft: "24px" }}>
           <h2>Add estimation</h2>
           Estimate {estimation?.number} as{" "}
@@ -131,17 +140,57 @@ function App() {
           </div>
           <div>
             <input
+              id="gridLines"
+              type="checkbox"
+              checked={gridLines}
+              onChange={(e) => setGridLines((v) => !v)}
+            />
+            <label
+              style={{
+                verticalAlign: "top",
+                textAlign: "left",
+                marginLeft: 8,
+                marginTop: 8,
+              }}
+              htmlFor="gridLines"
+            >
+              Grid lines
+            </label>
+          </div>
+          <div>
+            <input
               id="percentage"
               type="checkbox"
               checked={percentageError}
               onChange={(e) => setPercentageError((v) => !v)}
             />
             <label
-              style={{ verticalAlign: "top", marginTop: 8 }}
+              style={{
+                verticalAlign: "top",
+                textAlign: "left",
+                marginLeft: 8,
+                marginTop: 8,
+              }}
               htmlFor="percentage"
             >
               Percentage error
             </label>
+          </div>
+          <div>
+            <label>Table widths:</label>
+            <input
+              type="text"
+              value={tableWidths.join(" ")}
+              onChange={(e) => {
+                const value = e.target.value;
+                const strings = value.split(" ");
+                setTableWidths(
+                  strings.flatMap((string) =>
+                    string === "" ? [undefined] : [parseInt(string)]
+                  )
+                );
+              }}
+            />
           </div>
           <div>
             <label>X-axis:</label>
@@ -158,15 +207,6 @@ function App() {
               type="text"
               value={yAxis}
               onChange={(e) => setYAxis(parseInt(e.target.value))}
-            />
-          </div>
-
-          <div>
-            <label>Table width:</label>
-            <input
-              type="text"
-              value={tableWidth}
-              onChange={(e) => setTableWidth(parseInt(e.target.value))}
             />
           </div>
           <div>
