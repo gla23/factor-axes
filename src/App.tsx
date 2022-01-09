@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { factorable } from "./factorable";
+import { factorable } from "./utils/factorable";
 import { GridElement } from "./GridElement";
-import { Modal } from "./Modal";
+import { Modal } from "./utils/Modal";
 import estimationsData from "./estimations.json";
+import { getItem, setItem } from "./utils/localStorage";
 
 export interface Data {
   number: string;
@@ -48,12 +49,12 @@ function App() {
 
   const [estimation, setEstimation] = useState<null | Estimation>();
   const [estimations, setEstimations] = useState<Estimations>(() => {
-    const storage = localStorage.getItem("estimations");
+    const storage = getItem("estimations");
     return storage ? JSON.parse(storage) : estimationsData;
   });
 
   useEffect(() => {
-    localStorage.setItem("estimations", JSON.stringify(estimations));
+    setItem("estimations", JSON.stringify(estimations));
   });
 
   const [x = 6, xN = 5, y = 4, yN = 3] = tableWidths;
