@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
+import { Modal } from "content-modal";
 import "./App.css";
 import { factorable } from "./utils/factorable";
 import { GridElement } from "./GridElement";
-import { Modal } from "./utils/Modal";
 import estimationsData from "./estimations.json";
 import { getItem, setItem } from "./utils/localStorage";
 
@@ -115,7 +115,11 @@ function App() {
   return (
     <div className="App">
       {mainGrid}
-      <Modal open={!!estimation} close={() => setEstimation(undefined)}>
+      <Modal
+        isOpen={!!estimation}
+        onClose={() => setEstimation(undefined)}
+        darkMode={true}
+      >
         <div style={{ paddingLeft: "24px" }}>
           <h2>Add estimation</h2>
           Estimate {estimation?.number} as{" "}
