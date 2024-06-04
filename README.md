@@ -1,5 +1,7 @@
 A tool for finding error fractions of multiplier approximations available [here](http://gla23.github.io/factor-grid).
 
+To do: A tool for helping with a method I made up that lets you do mental arithmetic visually using a grid of factors. This method might be easier and faster, or it might just make things harder. Either way its pretty fun.
+
 | Query param example | Effect                                                                                             |
 | ------------------- | -------------------------------------------------------------------------------------------------- |
 | `simple`            | Remove the controls and coverage display                                                           |
