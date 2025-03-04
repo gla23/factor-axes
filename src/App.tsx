@@ -37,6 +37,12 @@ const colorOf = (number: number) => {
   const a = number === 1 ? g : e;
   return `rgba(${a[0]}, ${a[1]}, ${a[2]}, 0.25)`;
 };
+
+function urlCoordinates(param: string | null) {
+  return param
+    ?.split(" ")
+    .map((pair) => pair.split(",").map((str) => parseInt(str)));
+}
 function App() {
   const params = new URLSearchParams(location.search);
   const [base, setBase] = useState(10);
@@ -53,11 +59,10 @@ function App() {
   const [gridLines, setGridLines] = useState(params.get("grid") !== null);
   const simple = params.get("simple") !== null;
   const blind = params.get("blind") !== null;
-  const hiddenBoxes = params
-    .get("hidden")
-    ?.split(" ")
-    .map((pair) => pair.split(",").map((str) => parseInt(str)));
-  console.log(hiddenBoxes, params.get("hidden"));
+
+  const hiddenBoxes = urlCoordinates(params.get("hidden"));
+  const showingBoxes = urlCoordinates(params.get("showing"));
+
   const [estimation, setEstimation] = useState<null | Estimation>();
   const [estimations, setEstimations] = useState<Estimations>(() => {
     const storage = getItem("estimations");
@@ -104,6 +109,13 @@ function App() {
                 hidden={hiddenBoxes?.some(
                   (box) => box[0] === data.j && box[1] === data.i
                 )}
+                startShowing={
+                  (data.number === "1" ||
+                    showingBoxes?.some(
+                      (box) => box[0] === data.j && box[1] === data.i
+                    )) ??
+                  false
+                }
               />
             ))}
           </tr>

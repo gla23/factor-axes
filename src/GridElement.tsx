@@ -20,7 +20,8 @@ const Line = (props: { horizontal?: boolean; color: string }) => {
     />
   );
 };
-export const GridElement = (props: {
+
+interface GridElementProps {
   data: Data;
   estimations: Estimations;
   setEstimation: (estimation: Estimation) => void;
@@ -28,10 +29,14 @@ export const GridElement = (props: {
   gridLines: boolean;
   blind: boolean;
   hidden?: boolean;
-}) => {
-  const { estimations, data, setEstimation, blind, hidden } = props;
+  startShowing: boolean;
+}
+
+export const GridElement = (props: GridElementProps) => {
+  const { estimations, data, setEstimation, blind, hidden, startShowing } =
+    props;
   const [hover, setHover] = useState(false);
-  const [clicked, setClicked] = useState(data.number === "1");
+  const [clicked, setClicked] = useState(startShowing);
   const est = estimations[data.i]?.[data.j];
 
   const error = est ? est / parseFloat(data.number) : null;
