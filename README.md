@@ -10,13 +10,12 @@ I mostly use it to help me with basic things that I should already know. It make
 - Locating good replacements for primes higher than 5 and their multiples
 - Using different factors for each axis (bad idea)
 - Finding "error fractions" of multiplier approximations for working with numbers whose factors don't just consist of 2, 3 or 5s
-- Using the URL params to add visuals into my Anki decks via an iframe e.g. [bytes](https://gla23.github.io/factor-grid/?simple&grid&blind&axes=8,2,4,3&showing=3,0+4,0+5,0+3,1)
+- Using the URL params to add visuals into my Anki decks via an iframe e.g. [bytes](https://gla23.github.io/factor-grid/?simple&grid&blind&axes=10,2,4,3&showing=3,0+4,0+5,0+8,0+3,1)
 
 | Query param example | Effect                                                                                             |
 | ------------------- | -------------------------------------------------------------------------------------------------- |
 | `simple`            | Remove the controls and coverage display                                                           |
 | `blind`             | Don't display the grid numbers                                                                     |
-| `grid`              | Display the grid lines by default                                                                  |
 | `axes=11,6,5`       | Provide a default to the axis lengths                                                              |
 | `hidden=2,2+-1,3`   | Display "???" over the numbers at the given co-ordinates. This is for practising using the system. |
 | `showing=2,2+-1,3`  | Show the numbers at the given co-ordinates by deafult (clicking toggles them)                      |

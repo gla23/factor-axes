@@ -56,7 +56,7 @@ function App() {
     axes || [6, 5, 4, 3]
   );
   const [percentageError, setPercentageError] = useState(true);
-  const [gridLines, setGridLines] = useState(params.get("grid") !== null);
+  const [gridLines, setGridLines] = useState(true);
   const simple = params.get("simple") !== null;
   const blind = params.get("blind") !== null;
 
