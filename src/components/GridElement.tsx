@@ -23,9 +23,9 @@ export const GridElement = (props: GridElementProps) => {
   const [yN] = useURLState("yN", 3);
   const [hover, setHover] = useState(false);
   const [printable] = useURLState("printable", false);
-  const mainColour = printable ? "rgba(97, 194, 97, 1)" : "#060";
+  const mainColour = printable ? "rgba(119, 220, 119, 1)" : "#060";
   const mainThickness = printable ? 2 : 1;
-  const secondColour = printable ? "#ccc" : "#404040";
+  const secondColour = printable ? "#acacacff" : "#404040";
   const secondThickness = 1;
 
   const [clicked, toggleClicked] = useURLCoordinates(
@@ -102,7 +102,7 @@ export const GridElement = (props: GridElementProps) => {
       >
         <Text opacity={showMask ? 1 : 0}>???</Text>
       </span>
-      {estimation && errFraction && !blind && showNumber ? (
+      {!printable && estimation && errFraction && !blind && showNumber ? (
         <>
           <br />
           <span style={{ marginLeft: 8, fontSize: 12 }}>
@@ -118,8 +118,50 @@ export const GridElement = (props: GridElementProps) => {
 };
 
 function Text(props: { opacity?: number; children: string | number }) {
+  const { children } = props;
   const spring = useSpring({ to: { opacity: props.opacity ?? 1 } });
   const [printable] = useURLState("printable", false);
+  const string = String(children);
+  const number = typeof children === "string" ? parseFloat(children) : children;
+  const fancyDecimals = limitRecurringDecimals(props.children);
+  // Try up to 100 another time
+  // const bigFont = printable && number < 100 && string.length <= 3;
+  let ideaString = string.replace(".", "");
+  while (ideaString.startsWith("0")) {
+    ideaString = ideaString.slice(1);
+  }
+  const ideaInt = parseInt(ideaString);
+  const ideaWithMinimisedRecurring = parseInt(String(ideaInt).slice(0, 4));
+  // if (string.startsWith("0.333"))
+  //   console.log(
+  //     children,
+  //     string,
+  //     number,
+  //     ideaString,
+  //     ideaInt,
+  //     ideaWithMinimisedRecurring
+  //   );
+  const fontSize = (() => {
+    if (!printable) return undefined;
+    if (number > 100) return undefined;
+    if (ideaInt === 1) return 30;
+    if (ideaInt <= 9) return 22;
+    if (ideaInt <= 27) return 19;
+    if (ideaString.length === 2) return 16;
+  })();
+  const opacity = (() => {
+    if (fancyDecimals.endsWith("...")) {
+      if (fancyDecimals.length <= 9) return 1;
+      if (fancyDecimals.length <= 10) return 0.89;
+      if (fancyDecimals.length <= 11) return 0.8;
+      return 0.4;
+    }
+
+    if (ideaWithMinimisedRecurring > 200) return 0.5;
+    // if (ideaInt > 1000) return 0.5;
+    return 1;
+  })();
+
   return (
     <animated.span
       style={{
@@ -128,10 +170,11 @@ function Text(props: { opacity?: number; children: string | number }) {
         position: "relative",
         fontWeight: printable ? "bold" : "initial",
         color: printable ? "black" : "white",
-        // font:
+        fontSize,
+        opacity: Math.min(props.opacity ?? 1, opacity),
       }}
     >
-      {limitRecurringDecimals(props.children)}
+      {fancyDecimals}
     </animated.span>
   );
 }
@@ -149,9 +192,9 @@ const Line = (props: {
       className="line"
       style={{
         position: "absolute",
-        transform: `translate${
-          horizontal ? "Y" : "X"
-        }(50%) translate(-2px, 1px)`,
+        transform: `translate${horizontal ? "Y" : "X"}(50%) translate(-${
+          -1 + 2 * thickness
+        }px, 1px)`,
         [horizontal ? "bottom" : "left"]: "50%",
         [horizontal ? "right" : "bottom"]: -lineHeight / 2,
         [horizontal ? "height" : "width"]: "0px",
