@@ -15,7 +15,6 @@ function serialiseCoordinate(coords: null | Coordinate[]) {
     if (typeof y !== "number" || Number.isNaN(y)) return [];
     return [`${x}${axisSeparator}${y}`];
   });
-  console.log(coords, strings);
   return strings?.join(coordSeparator) ?? "";
 }
 

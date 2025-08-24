@@ -18,6 +18,7 @@ function App() {
   const [justGrid, setJustGrid] = useURLState<boolean>("just-grid", false);
   const [blind, setBlind] = useURLState("blind", false);
   const gridLinesState = useURLState("grid-lines", true);
+  const printingState = useURLState("printable", false);
   const percentageErrorState = useState(true);
   const xPState = useURLState("xP", 6);
   const xNState = useURLState("xN", 5);
@@ -51,10 +52,15 @@ function App() {
     window.history.replaceState({}, document.title, newURL.toString());
   }
 
-  if (justGrid) return <MainGrid {...estimationStuff} />;
+  if (justGrid)
+    return (
+      <div className={`${printingState[0] ? "printable" : ""}`}>
+        <MainGrid {...estimationStuff} />
+      </div>
+    );
 
   return (
-    <div className="App">
+    <div className={`App ${printingState[0] ? "printable" : ""} `}>
       <MainGrid {...estimationStuff} />
       <EstimationModal {...estimationStuff} />
       <br />
@@ -65,8 +71,9 @@ function App() {
           <button onClick={() => setJustGrid(true)}>Just grid</button>
           <div style={{ textAlign: "left", paddingBottom: 8 }}>
             <Check state={[blind, setBlind]}>Hide numbers</Check>
-            <Check state={gridLinesState}>Grid lines</Check>
+            {/* <Check state={gridLinesState}>Grid lines</Check> */}
             <Check state={percentageErrorState}>Show percentage error</Check>
+            <Check state={printingState}>For printing</Check>
           </div>
           <NumberInput state={xPState}>X-axis positive length</NumberInput>
           <NumberInput state={xNState}>X-axis negative length</NumberInput>

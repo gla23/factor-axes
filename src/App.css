@@ -28,6 +28,10 @@ input:not([type=checkbox]) {
   }
 }
 
+.printable .main-grid {
+  background-color: white;
+}
+
 button {
   padding: 2px 24px;
   margin-right: 8px;
@@ -108,4 +112,18 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+
+@media print {
+  @page {
+    size: landscape;
+    margin: 0cm;
+  }
+
+  .line {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }

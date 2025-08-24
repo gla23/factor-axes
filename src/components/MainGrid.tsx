@@ -51,7 +51,7 @@ export function MainGrid(props: MainGridProps) {
   return (
     <table
       style={{ width: "100vw", textAlign: "center", overflow: "hidden" }}
-      className={blind ? "" : "notBlind"}
+      className={`${blind ? "" : "notBlind"} main-grid`}
     >
       <tbody>
         {precalc.map((row, i) => (

@@ -4,6 +4,7 @@ import { Data, Estimations, Estimation } from "./MainGrid";
 import { useURLState } from "../utils/useURLState";
 import { removeFluff } from "./Summary";
 import { useURLCoordinates } from "./Coordinates";
+import { limitRecurringDecimals } from "../utils/limitRecurringDecimals";
 
 interface GridElementProps {
   data: Data;
@@ -21,6 +22,11 @@ export const GridElement = (props: GridElementProps) => {
   const [yP] = useURLState("yP", 4);
   const [yN] = useURLState("yN", 3);
   const [hover, setHover] = useState(false);
+  const [printable] = useURLState("printable", false);
+  const mainColour = printable ? "rgba(97, 194, 97, 1)" : "#060";
+  const mainThickness = printable ? 2 : 1;
+  const secondColour = printable ? "#ccc" : "#404040";
+  const secondThickness = 1;
 
   const [clicked, toggleClicked] = useURLCoordinates(
     "visible",
@@ -71,12 +77,20 @@ export const GridElement = (props: GridElementProps) => {
     >
       {props.gridLines &&
         data.i < yP &&
-        ((data.j % 4 === 0 && <Line color="#060" />) ||
-          (data.j % 2 === 0 && <Line color="#404040" />))}
+        ((data.j % 4 === 0 && (
+          <Line color={mainColour} thickness={mainThickness} />
+        )) ||
+          (data.j % 2 === 0 && (
+            <Line color={secondColour} thickness={secondThickness} />
+          )))}
       {props.gridLines &&
         data.j < xP - 1 &&
-        ((data.i % 4 === 0 && <Line color="#060" horizontal />) ||
-          (data.i % 2 === 0 && <Line color="#404040" horizontal />))}
+        ((data.i % 4 === 0 && (
+          <Line color={mainColour} thickness={mainThickness} horizontal />
+        )) ||
+          (data.i % 2 === 0 && (
+            <Line color={secondColour} thickness={secondThickness} horizontal />
+          )))}
       <Text opacity={showNumber ? 1 : showHover ? 0.6 : 0}>{data.number}</Text>
       <span
         style={{
@@ -105,33 +119,47 @@ export const GridElement = (props: GridElementProps) => {
 
 function Text(props: { opacity?: number; children: string | number }) {
   const spring = useSpring({ to: { opacity: props.opacity ?? 1 } });
+  const [printable] = useURLState("printable", false);
   return (
     <animated.span
       style={{
         ...spring,
         zIndex: 4,
         position: "relative",
+        fontWeight: printable ? "bold" : "initial",
+        color: printable ? "black" : "white",
+        // font:
       }}
     >
-      {props.children}
+      {limitRecurringDecimals(props.children)}
     </animated.span>
   );
 }
 
 const lineHeight = 350;
-const Line = (props: { horizontal?: boolean; color: string }) => {
-  const { horizontal, color } = props;
+
+const Line = (props: {
+  horizontal?: boolean;
+  color: string;
+  thickness: number;
+}) => {
+  const { horizontal, color, thickness } = props;
   return (
     <div
+      className="line"
       style={{
         position: "absolute",
-        transform: `translate${horizontal ? "Y" : "X"}(-50%)`,
+        transform: `translate${
+          horizontal ? "Y" : "X"
+        }(50%) translate(-2px, 1px)`,
         [horizontal ? "bottom" : "left"]: "50%",
         [horizontal ? "right" : "bottom"]: -lineHeight / 2,
-        [horizontal ? "height" : "width"]: "2px",
+        [horizontal ? "height" : "width"]: "0px",
         [horizontal ? "width" : "height"]: lineHeight,
         backgroundColor: color,
+        border: `${thickness}px solid ${color}`,
         zIndex: 2,
+        WebkitPrintColorAdjust: "exact",
       }}
     />
   );
