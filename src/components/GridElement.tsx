@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { animated, useSpring } from "react-spring";
-import { Data, Estimations, Estimation, removeFluff } from "./App";
+import { Data, Estimations, Estimation } from "./MainGrid";
+import { useURLState } from "../utils/useURLState";
+import { removeFluff } from "./Summary";
 
 const lineHeight = 350;
 const Line = (props: { horizontal?: boolean; color: string }) => {
@@ -25,7 +27,6 @@ interface GridElementProps {
   data: Data;
   estimations: Estimations;
   setEstimation: (estimation: Estimation) => void;
-  gridDimensions: (number | undefined)[];
   gridLines: boolean;
   blind: boolean;
   hidden?: boolean;
@@ -37,14 +38,19 @@ export const GridElement = (props: GridElementProps) => {
     props;
   const [hover, setHover] = useState(false);
   const [clicked, setClicked] = useState(startShowing);
-  const est = estimations[data.i]?.[data.j];
+
+  const est = estimations?.[data.i]?.[data.j];
 
   const error = est ? est / parseFloat(data.number) : null;
-  const [x = 6, xN = 5, y = 4, yN = 3] = props.gridDimensions;
+  const [xP] = useURLState("xP", 6);
+  const [xN] = useURLState("xN", 5);
+  const [yP] = useURLState("yP", 4);
+  const [yN] = useURLState("yN", 3);
 
   const showNumber = !blind || clicked;
   const showMask = hidden && !(showNumber || hover);
 
+  if (!estimations) return null;
   return (
     <td
       style={{ position: "relative" }}
@@ -64,11 +70,11 @@ export const GridElement = (props: GridElementProps) => {
       }}
     >
       {props.gridLines &&
-        data.i < y &&
+        data.i < yP &&
         ((data.j % 4 === 0 && <Line color="#060" />) ||
           (data.j % 2 === 0 && <Line color="#404040" />))}
       {props.gridLines &&
-        data.j < x - 1 &&
+        data.j < xP - 1 &&
         ((data.i % 4 === 0 && <Line color="#060" horizontal />) ||
           (data.i % 2 === 0 && <Line color="#404040" horizontal />))}
       <Text opacity={showNumber ? 1 : hover ? 0.6 : 0}>{data.number}</Text>
