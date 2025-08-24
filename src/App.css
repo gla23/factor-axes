@@ -34,7 +34,7 @@ button {
 }
 
 input:where([type=checkbox]) {
-  margin: 16px 8px;
+  margin: 4px 4px;
 }
 
 
@@ -87,7 +87,7 @@ tr {
 
 .controls {
   flex: 0 0 350px;
-  padding: 20px;
+  padding: 10px 20px;
   text-align: center;
   display: inline-block;
 }

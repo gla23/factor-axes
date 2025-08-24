@@ -9,7 +9,15 @@ export function NumberInput(props: {
   const [id] = useState(`check-${String(Math.random())}`);
   return (
     <div>
-      <label htmlFor={id} style={{ width: 200, display: "inline-block" }}>
+      <label
+        htmlFor={id}
+        style={{
+          width: 200,
+          display: "inline-block",
+          textAlign: "left",
+          paddingLeft: "8px",
+        }}
+      >
         {props.children}
       </label>
       <input

@@ -19,46 +19,19 @@ export interface MainGridProps {
   estimationModalState: StatePair<null | Estimation>;
 }
 
-interface Coordinate {
-  x: number;
-  y: number;
-}
-const serialiseCoordinate = (coords: null | Coordinate[]) =>
-  coords?.map((coord) => `${coord.x}-${coord.y}`).join(",") ?? "";
-
-const unserialiseCoordinate = (str: string): null | Coordinate[] =>
-  str.split(",").map((inner) => {
-    const [x, y] = inner.split("-");
-    return { x: parseInt(x), y: parseInt(y) };
-  });
-const coordinate = {
-  serialize: serialiseCoordinate,
-  deserialize: unserialiseCoordinate,
-};
-
 export function MainGrid(props: MainGridProps) {
   const [estimations] = props.estimationsState;
   const [, setEstimation] = props.estimationModalState;
 
-  const [xAxisFactor] = useURLState("xAxisFactor", 2);
-  const [yAxisFactor] = useURLState("yAxisFactor", 3);
-  const [base] = useURLState("base", 10);
   const [gridLines] = useURLState("grid-lines", true);
+  const [blind] = useURLState("blind", false);
   const [xP] = useURLState("xP", 6);
   const [xN] = useURLState("xN", 5);
   const [yP] = useURLState("yP", 4);
   const [yN] = useURLState("yN", 3);
-  const [blind] = useURLState("blind", false);
-  const [hiddenCoordinates] = useURLState<null | Coordinate[]>(
-    "hidden",
-    null,
-    coordinate
-  );
-  const [showingCoordinates] = useURLState<null | Coordinate[]>(
-    "showing",
-    null,
-    coordinate
-  );
+  const [xAxisFactor] = useURLState("xAxisFactor", 2);
+  const [yAxisFactor] = useURLState("yAxisFactor", 3);
+  const [base] = useURLState("base", 10);
 
   const precalc: Data[][] = [];
   for (let i = 0; i < yP + yN - 1; i++) {
@@ -91,16 +64,6 @@ export function MainGrid(props: MainGridProps) {
                 setEstimation={setEstimation}
                 gridLines={gridLines}
                 blind={blind}
-                hidden={hiddenCoordinates?.some(
-                  (box) => box.x === data.j && box.y === data.i
-                )}
-                startShowing={
-                  (data.number === "1" ||
-                    showingCoordinates?.some(
-                      (box) => box.x === data.j && box.y === data.i
-                    )) ??
-                  false
-                }
               />
             ))}
           </tr>
