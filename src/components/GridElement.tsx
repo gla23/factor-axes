@@ -39,7 +39,7 @@ export const GridElement = (props: GridElementProps) => {
     false
   );
 
-  const showNumber = clicked || (!blind && !hover);
+  const showNumber = clicked || (!blind && hover) || !blind;
   const showMask = masked && !showNumber;
   const showHover = hover && !masked;
 
@@ -84,14 +84,19 @@ export const GridElement = (props: GridElementProps) => {
             <Line color={secondColour} thickness={secondThickness} />
           )))}
       {props.gridLines &&
-        data.j < xP - 1 &&
+        data.j < xP &&
         ((data.i % 4 === 0 && (
           <Line color={mainColour} thickness={mainThickness} horizontal />
         )) ||
           (data.i % 2 === 0 && (
             <Line color={secondColour} thickness={secondThickness} horizontal />
           )))}
-      <Text opacity={showNumber ? 1 : showHover ? 0.6 : 0}>{data.number}</Text>
+      <Text
+        estimation={estimation}
+        opacity={showNumber ? 1 : showHover ? 0.6 : 0}
+      >
+        {data.number}
+      </Text>
       <span
         style={{
           position: "absolute",
@@ -100,16 +105,18 @@ export const GridElement = (props: GridElementProps) => {
           zIndex: 4,
         }}
       >
-        <Text opacity={showMask ? 1 : 0}>???</Text>
+        <Text estimation={estimation} opacity={showMask ? 1 : 0}>
+          ???
+        </Text>
       </span>
       {!printable && estimation && errFraction && !blind && showNumber ? (
         <>
           <br />
           <span style={{ marginLeft: 8, fontSize: 12 }}>
-            <Text>{estimation}</Text>
+            <Text estimation={estimation}>{estimation}</Text>
           </span>
           <span style={{ marginLeft: 8, fontSize: 12 }}>
-            <Text>{removeFluff(errFraction)}</Text>
+            <Text estimation={estimation}>{removeFluff(errFraction)}</Text>
           </span>
         </>
       ) : null}
@@ -117,8 +124,12 @@ export const GridElement = (props: GridElementProps) => {
   );
 };
 
-function Text(props: { opacity?: number; children: string | number }) {
-  const { children } = props;
+function Text(props: {
+  opacity?: number;
+  children: string | number;
+  estimation: number | null;
+}) {
+  const { children, estimation } = props;
   const spring = useSpring({ to: { opacity: props.opacity ?? 1 } });
   const [printable] = useURLState("printable", false);
   const string = String(children);
@@ -142,14 +153,16 @@ function Text(props: { opacity?: number; children: string | number }) {
   //     ideaWithMinimisedRecurring
   //   );
   const fontSize = (() => {
-    if (!printable) return undefined;
+    // if (!printable) return undefined;
+    if (typeof estimation === "number") return undefined;
     if (number > 100) return undefined;
-    if (ideaInt === 1) return 30;
+    if (ideaInt === 1) return 35;
     if (ideaInt <= 9) return 22;
     if (ideaInt <= 27) return 19;
     if (ideaString.length === 2) return 16;
   })();
   const opacity = (() => {
+    if (!printable) return 1;
     if (fancyDecimals.endsWith("...")) {
       if (fancyDecimals.length <= 9) return 1;
       if (fancyDecimals.length <= 10) return 0.89;
@@ -179,7 +192,7 @@ function Text(props: { opacity?: number; children: string | number }) {
   );
 }
 
-const lineHeight = 350;
+const lineHeight = 5050;
 
 const Line = (props: {
   horizontal?: boolean;

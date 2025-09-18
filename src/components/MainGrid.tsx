@@ -25,20 +25,20 @@ export function MainGrid(props: MainGridProps) {
 
   const [gridLines] = useURLState("grid-lines", true);
   const [blind] = useURLState("blind", false);
-  const [xP] = useURLState("xP", 6);
-  const [xN] = useURLState("xN", 5);
-  const [yP] = useURLState("yP", 4);
-  const [yN] = useURLState("yN", 3);
+  const [xP] = useURLState("xP", 5);
+  const [xN] = useURLState("xN", 4);
+  const [yP] = useURLState("yP", 3);
+  const [yN] = useURLState("yN", 2);
   const [xAxisFactor] = useURLState("xAxisFactor", 2);
   const [yAxisFactor] = useURLState("yAxisFactor", 3);
   const [base] = useURLState("base", 10);
 
   const precalc: Data[][] = [];
-  for (let i = 0; i < yP + yN - 1; i++) {
+  for (let i = 0; i < yP + yN + 1; i++) {
     precalc[i] = [];
-    for (let j = 0; j < xP + xN - 1; j++) {
-      const row = yP - 1 - i;
-      const column = j - xN + 1;
+    for (let j = 0; j < xP + xN + 1; j++) {
+      const row = yP - i;
+      const column = j - xN;
       const number = Math.pow(yAxisFactor, row) * Math.pow(xAxisFactor, column);
       precalc[i][j] = {
         number: number.toString(base).slice(0, 10),
