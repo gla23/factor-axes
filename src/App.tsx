@@ -13,17 +13,19 @@ import { Summary } from "./components/Summary";
 import { NumberInput } from "./components/NumberInput";
 import { Check } from "./components/Check";
 import { EstimationModal } from "./components/EstimationModal";
+import { Slider } from "./components/Slider";
 
+export const axesLengths = [5, 2, 3, 2];
 function App() {
   const [justGrid, setJustGrid] = useURLState<boolean>("just-grid", false);
   const [blind, setBlind] = useURLState("blind", false);
   const gridLinesState = useURLState("grid-lines", true);
   const printingState = useURLState("printable", false);
   const percentageErrorState = useState(true);
-  const xPState = useURLState("xP", 6);
-  const xNState = useURLState("xN", 5);
-  const yPState = useURLState("yP", 4);
-  const yNState = useURLState("yN", 3);
+  const xPState = useURLState("xP", axesLengths[0]);
+  const xNState = useURLState("xN", axesLengths[1]);
+  const yPState = useURLState("yP", axesLengths[2]);
+  const yNState = useURLState("yN", axesLengths[3]);
   const xAxisFactorState = useURLState("xAxisFactor", 2);
   const yAxisFactorState = useURLState("yAxisFactor", 3);
   const baseState = useURLState("base", 10);
@@ -59,9 +61,12 @@ function App() {
       </div>
     );
 
+  const yShift = -10;
   return (
     <div className={`App ${printingState[0] ? "printable" : ""} `}>
-      <MainGrid {...estimationStuff} />
+      <div style={{ height: justGrid ? "100vh" : 370, overflow: "scroll" }}>
+        <MainGrid {...estimationStuff} />
+      </div>
       <EstimationModal {...estimationStuff} />
       <br />
       <div className="wrapper">
@@ -75,10 +80,32 @@ function App() {
             <Check state={percentageErrorState}>Show percentage error</Check>
             <Check state={printingState}>For printing</Check>
           </div>
-          <NumberInput state={xPState}>X-axis positive length</NumberInput>
+          <div style={{ height: 120 }}>
+            <Slider
+              state={xPState}
+              max={16}
+              transform={`translate(-28px, ${50 + yShift}px) scaleX(1)`}
+            />
+            <Slider
+              state={xNState}
+              max={8}
+              transform={`translate(-34px, ${50 + yShift}px) scaleX(-1)`}
+            />
+            <Slider
+              state={yPState}
+              max={5}
+              transform={`translate(-35px, ${50 + yShift}px) rotate(-0.25turn)`}
+            />
+            <Slider
+              state={yNState}
+              max={5}
+              transform={`translate(-26px, ${57 + yShift}px) rotate(0.25turn)`}
+            />
+          </div>
+          {/* <NumberInput state={xPState}>X-axis positive length</NumberInput>
           <NumberInput state={xNState}>X-axis negative length</NumberInput>
           <NumberInput state={yPState}>Y-axis positive length</NumberInput>
-          <NumberInput state={yNState}>Y-axis negative length</NumberInput>
+          <NumberInput state={yNState}>Y-axis negative length</NumberInput> */}
           <NumberInput state={xAxisFactorState}>X-axis factor:</NumberInput>
           <NumberInput state={yAxisFactorState}>Y-axis factor:</NumberInput>
           <NumberInput state={baseState}>Display base:</NumberInput>

@@ -1,6 +1,7 @@
 import { GridElement } from "./GridElement";
 import { StatePair } from "../utils/StatePair";
 import { useURLState } from "../utils/useURLState";
+import { axesLengths } from "../App";
 
 export interface Data {
   number: string;
@@ -25,10 +26,10 @@ export function MainGrid(props: MainGridProps) {
 
   const [gridLines] = useURLState("grid-lines", true);
   const [blind] = useURLState("blind", false);
-  const [xP] = useURLState("xP", 5);
-  const [xN] = useURLState("xN", 4);
-  const [yP] = useURLState("yP", 3);
-  const [yN] = useURLState("yN", 2);
+  const [xP] = useURLState("xP", axesLengths[0]);
+  const [xN] = useURLState("xN", axesLengths[1]);
+  const [yP] = useURLState("yP", axesLengths[2]);
+  const [yN] = useURLState("yN", axesLengths[3]);
   const [xAxisFactor] = useURLState("xAxisFactor", 2);
   const [yAxisFactor] = useURLState("yAxisFactor", 3);
   const [base] = useURLState("base", 10);

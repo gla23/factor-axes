@@ -5,6 +5,7 @@ import { useURLState } from "../utils/useURLState";
 import { removeFluff } from "./Summary";
 import { useURLCoordinates } from "./Coordinates";
 import { limitRecurringDecimals } from "../utils/limitRecurringDecimals";
+import { axesLengths } from "../App";
 
 interface GridElementProps {
   data: Data;
@@ -17,10 +18,10 @@ interface GridElementProps {
 export const GridElement = (props: GridElementProps) => {
   const { estimations, data, setEstimation, blind } = props;
 
-  const [xP] = useURLState("xP", 6);
-  const [xN] = useURLState("xN", 5);
-  const [yP] = useURLState("yP", 4);
-  const [yN] = useURLState("yN", 3);
+  const [xP] = useURLState("xP", axesLengths[0]);
+  const [xN] = useURLState("xN", axesLengths[1]);
+  const [yP] = useURLState("yP", axesLengths[2]);
+  const [yN] = useURLState("yN", axesLengths[3]);
   const [hover, setHover] = useState(false);
   const [printable] = useURLState("printable", false);
   const mainColour = printable ? "rgba(119, 220, 119, 1)" : "#060";

@@ -12,7 +12,7 @@ export function NumberInput(props: {
       <label
         htmlFor={id}
         style={{
-          width: 200,
+          width: 140,
           display: "inline-block",
           textAlign: "left",
           paddingLeft: "8px",
