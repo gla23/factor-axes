@@ -2,7 +2,7 @@
   "name": "grid",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://gla23.github.io/factor-grid",
+  "homepage": "http://gla23.github.io/factor-axes",
   "dependencies": {
     "@types/bun": "^1.2.20",
     "@types/react": "^17.0.83",

@@ -17,6 +17,6 @@ git add -A
 git commit -m '🚚 Deploy'
 
 
-git push -f https://github.com/gla23/factor-grid.git master:gh-pages
+git push -f https://github.com/gla23/factor-axes.git master:gh-pages
 
 cd -
