@@ -133,6 +133,7 @@ function Text(props: {
   const { children, estimation } = props;
   const spring = useSpring({ to: { opacity: props.opacity ?? 1 } });
   const [printable] = useURLState("printable", false);
+  const [blind] = useURLState("blind", false);
   const string = String(children);
   const number = typeof children === "string" ? parseFloat(children) : children;
   const fancyDecimals = limitRecurringDecimals(props.children);
@@ -163,7 +164,7 @@ function Text(props: {
     if (ideaString.length === 2) return 16;
   })();
   const opacity = (() => {
-    if (!printable) return 1;
+    if (blind) return 1;
     if (fancyDecimals.endsWith("...")) {
       if (fancyDecimals.length <= 9) return 1;
       if (fancyDecimals.length <= 10) return 0.89;
