@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { animated, useSpring } from "react-spring";
 import { Data, Estimations, Estimation } from "./MainGrid";
-import { useURLState } from "../utils/useURLState";
+import { NumberObject, numberObject, useURLState } from "../utils/useURLState";
 import { removeFluff } from "./Summary";
 import { useURLCoordinates } from "./Coordinates";
 import { limitRecurringDecimals } from "../utils/limitRecurringDecimals";
@@ -32,12 +32,12 @@ export const GridElement = (props: GridElementProps) => {
   const [clicked, toggleClicked] = useURLCoordinates(
     "visible",
     { x: data.i, y: data.j },
-    data.number === "1"
+    data.number === "1",
   );
   const [masked, toggleMasked] = useURLCoordinates(
     "masked",
     { x: data.i, y: data.j },
-    false
+    false,
   );
 
   const showNumber = clicked || (!blind && hover) || !blind;
@@ -154,8 +154,15 @@ function Text(props: {
   //     ideaInt,
   //     ideaWithMinimisedRecurring
   //   );
+  const [numberSizes] = useURLState<NumberObject | null>(
+    "number-sizes",
+    null,
+    numberObject,
+  );
+
   const fontSize = (() => {
     // if (!printable) return undefined;
+    if (numberSizes && numberSizes[number]) return numberSizes[number];
     if (typeof estimation === "number") return undefined;
     if (number > 100) return undefined;
     if (ideaInt === 1) return 35;

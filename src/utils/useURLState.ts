@@ -70,7 +70,7 @@ class URLStateManager {
 
   private originalPushState = window.history.pushState.bind(window.history);
   private originalReplaceState = window.history.replaceState.bind(
-    window.history
+    window.history,
   );
 
   private patchHistoryMethod(method: "pushState" | "replaceState"): void {
@@ -82,7 +82,7 @@ class URLStateManager {
     window.history[method] = (
       state: any,
       title: string,
-      url?: string | URL | null
+      url?: string | URL | null,
     ) => {
       original(state, title, url);
       // Use setTimeout to ensure URL has been updated
@@ -146,6 +146,22 @@ class URLStateManager {
 // Global singleton instance
 const urlStateManager = new URLStateManager();
 
+export type NumberObject = { [number: number]: number } | null;
+export const numberObject = {
+  serialize: (value: NumberObject) =>
+    value
+      ? Object.entries(value)
+          .map(([number, size]) => `${number}→${size}`)
+          .join("_")
+      : "",
+  deserialize: (string: string) =>
+    Object.fromEntries(
+      string
+        .split("_")
+        .map((pair) => pair.split("→").map((num) => parseFloat(num))),
+    ),
+};
+
 /**
  * A hook that syncs state with URL search parameters
  * Safe for use across multiple components
@@ -157,13 +173,14 @@ const urlStateManager = new URLStateManager();
 export const useURLState = <T>(
   key: string,
   defaultValue: T,
-  options: UseURLStateOptions<T> = {}
+  options: UseURLStateOptions<T> = {},
 ): [T, (value: SetStateAction<T>) => void] => {
   const {
     serialize = (value: T): string => {
       if (value === null || value === undefined) return "";
       if (typeof value === "string") return value as string;
-      return JSON.stringify(value);
+      const json = JSON.stringify(value);
+      return json.replaceAll(" ", "");
     },
     deserialize = (value: string): T => {
       if (!value) return defaultValue;
@@ -206,7 +223,7 @@ export const useURLState = <T>(
         const newValue =
           urlValue !== null ? currentDeserialize(urlValue) : currentDefault;
         setState(newValue);
-      }
+      },
     );
 
     return unsubscribe;
@@ -243,10 +260,10 @@ export const useURLState = <T>(
       urlStateManager.updateURL(
         key,
         shouldRemove ? "" : serializedValue,
-        replace
+        replace,
       );
     },
-    [key, state, replace]
+    [key, state, replace],
   );
 
   return [state, setURLState];

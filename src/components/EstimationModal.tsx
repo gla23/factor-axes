@@ -1,6 +1,8 @@
 import { Modal } from "content-modal";
 import { Estimation, Estimations } from "./MainGrid";
-import { StatePair } from "../utils/StatePair";
+import { SimpleStatePair, StatePair } from "../utils/StatePair";
+import { numberObject, NumberObject, useURLState } from "../utils/useURLState";
+import { Slider } from "./Slider";
 
 export function EstimationModal(props: {
   estimationsState: StatePair<Estimations>;
@@ -8,6 +10,30 @@ export function EstimationModal(props: {
 }) {
   const [estimations, setEstimations] = props.estimationsState;
   const [modalEstimation, setModalEstimation] = props.estimationModalState;
+
+  const [numberSizes, setNumberSizes] = useURLState<NumberObject>(
+    "number-sizes",
+    null,
+    numberObject,
+  );
+  const thisNumberString = modalEstimation?.number;
+  if (!thisNumberString) return ""; // When modal is closed
+  const thisNumber = parseFloat(thisNumberString);
+  const sizeState: SimpleStatePair<number | null> = [
+    numberSizes ? numberSizes[thisNumber] : null,
+    (newSize: number | null) => {
+      if (newSize === null) return;
+      setNumberSizes({ ...numberSizes, [thisNumber]: newSize });
+    },
+  ];
+  const clear = () => {
+    if (!numberSizes) return;
+    const newNumberSizes = { ...numberSizes };
+    delete newNumberSizes[thisNumber];
+    setNumberSizes(newNumberSizes);
+    setModalEstimation(null);
+  };
+
   return (
     <Modal
       isOpen={!!modalEstimation}
@@ -16,7 +42,7 @@ export function EstimationModal(props: {
     >
       <div style={{ paddingLeft: "24px" }}>
         <h2>Add estimation</h2>
-        Estimate {modalEstimation?.number} as{" "}
+        Estimate {thisNumber} as{" "}
         <input
           type="text"
           autoFocus
@@ -39,6 +65,18 @@ export function EstimationModal(props: {
             setEstimations(newEstimations);
           }}
         />
+        <div style={{ marginTop: 24 }}>
+          <label htmlFor="sizeSlider">Number size</label>
+        </div>
+        <div>
+          <Slider
+            id="sizeSlider"
+            style={{ width: "200px" }}
+            state={sizeState as any}
+            max={50}
+          ></Slider>
+        </div>
+        <button onClick={clear}>Clear</button>
       </div>
     </Modal>
   );
