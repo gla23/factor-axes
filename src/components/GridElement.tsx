@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Data, Estimations, Estimation } from "./MainGrid";
+import { NumberObject, numberObject, useURLState } from "../utils/useURLState";
 import {
-  NumberList,
-  NumberObject,
-  numberList,
-  numberObject,
-  useURLState,
-} from "../utils/useURLState";
+  ValueList,
+  matchesValue,
+  valueList,
+  withValue,
+  withoutValue,
+} from "../utils/valueList";
 import { removeFluff } from "./Summary";
-import { useURLCoordinates } from "./Coordinates";
 import { limitRecurringDecimals } from "../utils/limitRecurringDecimals";
 
 interface GridElementProps {
@@ -19,12 +19,6 @@ interface GridElementProps {
   blind: boolean;
 }
 
-const matchesNumber = (numbers: NumberList, value: number) =>
-  numbers?.some((candidate) => {
-    const tolerance = Math.max(1e-9, Math.abs(value) * 1e-9);
-    return Math.abs(candidate - value) <= tolerance;
-  }) ?? false;
-
 export const GridElement = (props: GridElementProps) => {
   const { estimations, data, setEstimation, blind } = props;
 
@@ -34,30 +28,33 @@ export const GridElement = (props: GridElementProps) => {
   const [yN] = useURLState("yN");
   const [hover, setHover] = useState(false);
   const [printable] = useURLState("printable");
-  const [showNumbers] = useURLState<NumberList>("show", null, numberList);
-  const [hideNumbers] = useURLState<NumberList>("hide", null, numberList);
+  const [centralNumber] = useURLState<number>("centralNumber");
+  const [showParam, setShown] = useURLState<ValueList>("show", null, valueList);
+  const [hidden, setHidden] = useURLState<ValueList>("hide", null, valueList);
+  // With no `show` param the centre is shown
+  const shown = showParam ?? [centralNumber];
   const mainColour = printable ? "rgba(119, 220, 119, 1)" : "#060";
   const mainThickness = printable ? 2 : 1;
   const secondColour = printable ? "#acacacff" : "#404040";
   const secondThickness = 1;
 
-  const [clicked, toggleClicked] = useURLCoordinates(
-    "visible",
-    { x: data.i, y: data.j },
-    data.i === 0 && data.j === 0,
-  );
-  const [masked, toggleMasked] = useURLCoordinates(
-    "masked",
-    { x: data.i, y: data.j },
-    false,
-  );
+  // Hide wins if a value is in both lists, so clicking moves it between them
+  const masked = matchesValue(hidden, data.value);
+  const revealed = matchesValue(shown, data.value) && !masked;
+  function toggleRevealed() {
+    if (revealed) return setShown(withoutValue(shown, data.value));
+    setShown(withValue(shown, data.value));
+    if (masked) setHidden(withoutValue(hidden, data.value));
+  }
+  function toggleMasked() {
+    if (masked) return setHidden(withoutValue(hidden, data.value));
+    setHidden(withValue(hidden, data.value));
+    if (matchesValue(shown, data.value))
+      setShown(withoutValue(shown, data.value));
+  }
 
-  const shownByNumber = matchesNumber(showNumbers, data.value);
-  const hiddenByNumber = matchesNumber(hideNumbers, data.value);
-  const explicitlyShown = clicked || (shownByNumber && !masked);
-  const explicitlyHidden = masked || (hiddenByNumber && !clicked);
-  const showNumber = (explicitlyShown && !explicitlyHidden) || (!blind && hover) || !blind;
-  const showMask = explicitlyHidden && !showNumber;
+  const showNumber = revealed || !blind;
+  const showMask = masked && !showNumber;
   const showHover = hover && !masked;
 
   const estimation = estimations?.[data.i]?.[data.j];
@@ -76,15 +73,11 @@ export const GridElement = (props: GridElementProps) => {
         e.preventDefault();
         if (!blind) return;
         toggleMasked();
-        if (clicked) toggleClicked();
       }}
       onClick={(e) => {
         if (e.target.constructor.name === "HTMLDivElement")
           return e.preventDefault();
-        if (blind) {
-          toggleClicked();
-          // Masked should stay so you can unmask again with a click
-        }
+        if (blind) toggleRevealed();
         if (!blind)
           setEstimation({
             ...data,

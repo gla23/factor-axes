@@ -15,14 +15,14 @@ I mostly use it to help me with basic things that I should already know. It make
 - You can use the tool to find good replacements for primes higher than 5 and their multiples. Click on a number to add an approximation which will then fill the boxes in the bottom right to show your coverage of 1-100. The "error fractions" of these multiplier approximations are also displayed.
 - You can give the axes factors other than 2 and 3 (bad idea)
 - You can display the numbers in bases other than 10 (bad idea)
-- You can fiddle with the settings to create shareable pages due to the data being in URL params. I use these to add iframes into my Anki decks e.g. [bits and bytes](https://gla23.github.io/factor-axes/?visible=0.0_0.4_0.8_0.10_0.3_1.3_0.5&xP=10&xN=1&yP=2&yN=1&blind=true&just-grid=true). You can pick specific coordinates with `visible` and `masked`, or specific values with `show` and `hide`. Coordinate state overrides value state per cell, so you can still click to reveal a `hide`d number or mask a `show`n one.
+- You can fiddle with the settings to create shareable pages due to the data being in URL params. I use these to add iframes into my Anki decks e.g. [bits and bytes](https://gla23.github.io/factor-axes/?show=1_8_16_24_32_256_1024&xP=10&xN=1&yP=2&yN=1&blind=true&just-grid=true). Pick the numbers to reveal with `show` and the ones to mask with `hide`, written as integers or fractions like `9/2`. Hide wins if a number is in both, and clicking moves numbers between the lists. Old links using the coordinate-based `visible` and `masked` params are converted automatically.
 - Example: [Show powers of two](https://gla23.github.io/factor-axes/?show=1_2_4_8_16_32_64_128_256&xP=8&xN=1&yP=2&yN=1&blind=true&just-grid=true)
 - Example: [Center 7 and hide one step](https://gla23.github.io/factor-axes/?centralNumber=7&show=7_14_21_28_42&hide=28&xP=3&xN=1&yP=2&yN=1&blind=true&just-grid=true)
 
 <br>
 
 ```
-<iframe src="https://gla23.github.io/factor-axes/?visible=0.0_0.4_0.8_0.10_0.3_1.3_0.5&xP=10&xN=1&yP=2&yN=1&blind=true&just-grid=true" height="400px" width="800px"></iframe>
+<iframe src="https://gla23.github.io/factor-axes/?show=1_8_16_24_32_256_1024&xP=10&xN=1&yP=2&yN=1&blind=true&just-grid=true" height="400px" width="800px"></iframe>
 ```
 
 Other stuff:

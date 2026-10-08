@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { urlStateDefaults } from "../defaults";
+import { readableSearch } from "./valueList";
 
 type SetStateAction<S> = S | ((prevState: S) => S);
 
@@ -128,6 +129,7 @@ class URLStateManager {
     } else {
       url.searchParams.set(key, value);
     }
+    url.search = readableSearch(url.search);
 
     const method = replace ? "replaceState" : "pushState";
     window.history[method]({}, "", url.toString());
@@ -163,19 +165,6 @@ export const numberObject = {
         .split("_")
         .map((pair) => pair.split("→").map((num) => parseFloat(num))),
     ),
-};
-
-export type NumberList = number[] | null;
-export const numberList = {
-  serialize: (value: NumberList) => (value ? value.join("_") : ""),
-  deserialize: (string: string): NumberList => {
-    if (!string || string.trim() === "") return null;
-    const values = string
-      .split(/[,_]/)
-      .map((part) => parseFloat(part.trim()))
-      .filter((value) => !Number.isNaN(value));
-    return values.length > 0 ? values : null;
-  },
 };
 
 /**
