@@ -33,7 +33,7 @@ input:not([type=checkbox]) {
 }
 
 button {
-  padding: 2px 24px;
+  padding: 0 24px;
   margin-right: 8px;
 }
 

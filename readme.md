@@ -1,5 +1,7 @@
 Ok so I made a method for doing mental arithmetic visually. You take a graph and give each axis a factor. Then to multiply you slide around adding vectors.
 
+Play around [here](http://gla23.github.io/factor-axes).
+
 It deserves a proper explanation at some point. The fun comes when trying to work with numbers whose factors don't just consist of 2, 3 or 5s.
 
 5s? Yes, go left!
@@ -8,7 +10,7 @@ I mostly use it to help me with basic things that I should already know. It make
 
 [The tool](http://gla23.github.io/factor-axes) can be used for various things.
 
-- The basic graph explans the concept. It has sliders to change the axes lenghts so you can explore what happens when you go off the edge of the ~grid~ known world.
+- The basic graph illustrates the concept. It has sliders to change the axes lenghts so you can explore what happens when you go off the edge of the ~grid~ known world.
 - The coloured lines help orient yourself mentally when using the graph without seeing it in front of you physically. They also aid memorisation of the grid.
 - You can use the tool to find good replacements for primes higher than 5 and their multiples. Click on a number to add an approximation which will then fill the boxes in the bottom right to show your coverage of 1-100. The "error fractions" of these multiplier approximations are also displayed.
 - You can give the axes factors other than 2 and 3 (bad idea)

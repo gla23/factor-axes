@@ -1,10 +1,9 @@
-# Presentational
+Top thing: is it worth swapping to show when clicking so that the URL is more readable by default? I guess it would have to be for integers only but this could be calculated quite easily really? I guess you'd have to be smart with the removing as well... Ah yes it should remove from either URL param if it exists in either (remove from both if it's in both)
 
-Fix button text positioning
+Ah wait perhaps we can combine them into one URL param? Either the int form if it's an int, or the x.y form it it's not! Actually maybe it would be more fun to do the int version of the numbers. e.g. 4.5 would be 45. And 2.66666 would be 8/3! Then it's all very readable?
+Add docs for how show works!
 
-Stop it being so stretched horizontally when printing
-
-Add the GitHub link so you can get to the explanation from the site
+Ah I really need to do a map for this! Having the colours isn't enough! Perhaps the unique lines idea would work but really I need a map...
 
 # Concept R & D / mnemonic stickyness
 
@@ -61,8 +60,10 @@ Get to the bottom of how you can reverse the direction of what you're doing base
 
 Display a box-map with one of the boxes highlighted, then you have to click then drag into the corresponding factor-axes vector!
 
-- Right click for primes! Nice!
+- Right click for primes! Nice! 2026-09-13 Hmm no you'd just leave that in the center! Right click for at least two primes > 5! Or drag and click n times for the number of primes together on the square that is the number build from the < 5 primes? This collides with the origin shifting based on lowest > 5 prime? Or because it is lowest it can still work?!
 - Similar for mod/remainder drag 9 to '3/3 from top left'
+
+Show the numbers from 1-100 and have to place those. Most will just fit otherwise do the approximations? Hmm approximations has to be something different to the idea above because they are all exact working out the prime factors!
 
 # Very old notes
 

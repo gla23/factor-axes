@@ -122,6 +122,22 @@ function App() {
               ? "Left click to show a number, right click to mask."
               : "Click on a number in the top grid to add an estimation. The right grid shows which numbers can be composed of your factors and the corerresponding error fractions."}
           </div>
+          <div
+            style={{
+              textAlign: "left",
+              fontSize: 12,
+              margin: "12px 14px 0px 20px",
+            }}
+          >
+            <a
+              href="https://github.com/gla23/factor-axes#readme"
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: "darkgray" }}
+            >
+              What is this?
+            </a>
+          </div>
         </div>
         <Summary
           estimations={estimations}
